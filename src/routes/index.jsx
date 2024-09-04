@@ -4,27 +4,34 @@ import Discord from "../pages/Discord";
 import Twiter from "../pages/Twitter";
 import Facebook from "../pages/Facebook";
 import Youtube from "../pages/Youtube";
+import MainLayout from "../layout/MainLayout";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/discord",
-    element: <Discord />,
-  },
-  {
-    path: "/twitter",
-    element: <Twiter />,
-  },
-  {
-    path: "/facebook",
-    element: <Facebook />,
-  },
-  {
-    path: "/youtube",
-    element: <Youtube />,
+    element: <MainLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/discord",
+        element: <Discord />,
+      },
+      {
+        path: "/twitter",
+        element: <Twiter />,
+      },
+      {
+        path: "/facebook",
+        element: <Facebook />,
+      },
+      {
+        path: "/youtube",
+        element: <Youtube />,
+      },
+    ],
   },
 ]);
 
