@@ -1,7 +1,8 @@
 import axios from "axios";
 
 // Google Api key
-const key = import.meta.env.GOOGLE_API_KEY;
+const key = import.meta.env.VITE_GOOGLE_API_KEY;
+console.log("key", key);
 
 // YouTube will give 50 items per request. But I need all the items in one request. so I create a recursive function
 
