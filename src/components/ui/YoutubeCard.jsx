@@ -10,7 +10,7 @@ import { PlayCircleOutline } from "@mui/icons-material";
 // this card is use only Home page
 const YoutubeCard = ({ img, title, channelTitle, to }) => {
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345, position: "relative", paddingBottom: "50px" }}>
       <CardActionArea>
         <CardMedia component="img" image={img} alt={title} />
         <CardContent>
@@ -20,7 +20,7 @@ const YoutubeCard = ({ img, title, channelTitle, to }) => {
               : channelTitle}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
-            {title}
+            {title.length > 90 ? `${title.slice(0, 90)}...` : title}
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -34,9 +34,11 @@ const YoutubeCard = ({ img, title, channelTitle, to }) => {
             gap: "8px",
             padding: "10px",
             background: "#1976D2",
-            width: "100%",
+            width: "96%",
             borderRadius: "8px",
             color: "white",
+            position: "absolute",
+            bottom: "7px",
           }}
           variant="h6"
           color="primary"

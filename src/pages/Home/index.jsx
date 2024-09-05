@@ -3,13 +3,16 @@ import Modal from "../../components/Modal";
 import { useState } from "react";
 import useChangeInputData from "../../hooks/useChangeInputData";
 import { useStoreActions, useStoreState } from "easy-peasy";
-import YoutubeCard from "../../components/ui/YoutubeCard";
+import PlayListItems from "./PlayListItems";
 
 function Home() {
   // Modal useState
   const [open, setOpen] = useState(false);
   // Handel  Change
-  const { handleChange, state: urlState } = useChangeInputData({ State: "" });
+  const {
+    handleChange,
+    state: { url },
+  } = useChangeInputData({ State: "" });
   // easy peasy store
   const store = useStoreState((state) => state.youtubePlayLists);
   const playListActon = useStoreActions((action) => action.youtubePlayLists);
@@ -23,9 +26,15 @@ function Home() {
   };
   // Handel fetch playList data
   const handleSubmit = async () => {
-    playListActon.savePlayList(urlState.url);
+    // verify url or playlistId
+    if (url.match("https")) {
+      const newUrl = url.split("list=")[1];
+      playListActon.savePlayList(newUrl);
+    } else {
+      playListActon.savePlayList(url);
+    }
   };
-  console.log("I am handel chnage", store, urlState, Object.values(store.data));
+  console.log("I am handel chnage", store, url, Object.values(store.data));
   return (
     <div>
       <Modal
@@ -51,21 +60,23 @@ function Home() {
         </Button>
       </Box>
       {/* PlayList Items */}
-      <Box marginY={"60px"}>
+      <Box>
         {/* Your PlayList */}
-        <Box>
-          <Box sx={{ display: "flex", flexDirection: "row", gap: "20px" }}>
-            {Object.values(store.data).map((e) => (
-              <YoutubeCard
-                to={e.id}
-                key={e.id}
-                img={e.thumbnails?.medium?.url}
-                title={e.title}
-                channelTitle={e.channelTitle}
-              />
-            ))}
-          </Box>
-        </Box>
+        <PlayListItems
+          path={"/playlists"}
+          store={store}
+          title={"Your Playlist Items"}
+        />
+        <PlayListItems
+          path={"/favourite-playlists"}
+          store={store}
+          title={"Your Favourite Playlist Items"}
+        />
+        <PlayListItems
+          store={store}
+          title={"Your Recent Items"}
+          seeAll={true}
+        />
       </Box>
     </div>
   );
