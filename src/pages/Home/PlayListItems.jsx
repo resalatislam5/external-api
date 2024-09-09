@@ -1,10 +1,18 @@
 import { Box, Skeleton, Typography } from "@mui/material";
 import YoutubeCard from "../../components/ui/YoutubeCard";
 import CustomLink from "../../components/ui/CustomLink";
-import { useEffect } from "react";
 
-function PlayListItems({ store, title, seeAll, path }) {
-  useEffect(() => {}, [store.error]);
+function PlayListItems({
+  store,
+  title,
+  seeAll,
+  path,
+  addPlayList,
+  recent,
+  favorite,
+  deletePlayList,
+  removeFavorite,
+}) {
   return (
     <Box marginY={"60px"}>
       <Box display={"flex"} justifyContent={"space-between"}>
@@ -35,18 +43,12 @@ function PlayListItems({ store, title, seeAll, path }) {
                 <Skeleton width="300px" height="20px" />
                 <Skeleton width="300px" height="20px" />
                 <Skeleton width="300px" height="20px" />
+                <Skeleton width="300px" height="20px" />
               </Box>
             )
           )}
         </Box>
       ) : (
-        // <Box sx={{ pt: 0.5 }}>
-        //   <Skeleton width="30%" height="200px" />
-        //   <Skeleton width="30%" />
-        //   <Skeleton width="30%" />
-        //   <Skeleton width="30%" />
-        //   <Skeleton width="30%" />
-        // </Box>
         <Box
           sx={{
             display: "flex",
@@ -61,11 +63,17 @@ function PlayListItems({ store, title, seeAll, path }) {
               ?.slice(0, 4)
               .map((e) => (
                 <YoutubeCard
+                  recent={recent}
                   to={e.id}
                   key={e.id}
                   img={e.thumbnails?.medium?.url}
                   title={e.title}
                   channelTitle={e.channelTitle}
+                  addPlayList={addPlayList}
+                  favorite={favorite}
+                  deletePlayList={deletePlayList}
+                  isFavorite={e.isFavorite}
+                  removeFavorite={removeFavorite}
                 />
               ))
           ) : (

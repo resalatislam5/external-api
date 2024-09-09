@@ -7,6 +7,9 @@ const favoritePlayListModel = persist({
   setLoading: action((state, payload) => {
     state.isLoading = payload;
   }),
+  setSuccess: action((state, payload) => {
+    state.success = payload;
+  }),
   data: thunk(({ setLoading }, payload, { getState, getStoreState }) => {
     setLoading(true);
     let items = getState().items.map(
@@ -21,9 +24,6 @@ const favoritePlayListModel = persist({
     return items;
   }),
   addFavoriteList: action((state, payload) => {
-    if (state.items.find((e) => e === payload)) {
-      return;
-    }
     state.items = [...state.items, payload];
     state.success = "Successfully Added";
   }),
@@ -31,6 +31,24 @@ const favoritePlayListModel = persist({
     state.items = state.items.filter((e) => e !== payload);
     state.success = "Remove Successfully";
   }),
+  addFavorite: thunk(
+    ({ addFavoriteList }, payload, { getState, getStoreState }) => {
+      if (getState().items.find((e) => e === payload)) {
+        return;
+      }
+      addFavoriteList(payload);
+      getStoreState().youtubePlayLists.data[payload].isFavorite = true;
+    }
+  ),
+  removeFavorite: thunk(
+    ({ removeFavoriteList }, payload, { getState, getStoreState }) => {
+      if (!getState().items.find((e) => e === payload)) {
+        return;
+      }
+      removeFavoriteList(payload);
+      getStoreState().youtubePlayLists.data[payload].isFavorite = false;
+    }
+  ),
 });
 
 export default favoritePlayListModel;

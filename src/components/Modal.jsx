@@ -5,7 +5,15 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
 // This modal  only use Home page
-const Modal = ({ open, handleClose, handleSubmit, children, title, css }) => {
+const Modal = ({
+  open,
+  handleClose,
+  handleSubmit,
+  children,
+  title,
+  css,
+  okButton,
+}) => {
   return (
     <>
       <Dialog
@@ -26,7 +34,7 @@ const Modal = ({ open, handleClose, handleSubmit, children, title, css }) => {
             }}
             autoFocus
           >
-            Add Playlist
+            {okButton ?? "ok"}
           </Button>
         </DialogActions>
       </Dialog>

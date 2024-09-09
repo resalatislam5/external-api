@@ -1,13 +1,19 @@
 import { Box, Button, OutlinedInput, Typography } from "@mui/material";
 import Modal from "../../components/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useChangeInputData from "../../hooks/useChangeInputData";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import PlayListItems from "./PlayListItems";
+import toast from "react-hot-toast";
 
+// TODO: DELETE icon change
 function Home() {
   // Modal useState
   const [open, setOpen] = useState(false);
+  //
+
+  const [favoriteState, setFavoriteState] = useState({});
+  const [recentState, setRecentState] = useState({});
   // Handel  Change
   const {
     handleChange,
@@ -16,6 +22,12 @@ function Home() {
   // easy peasy store
   const store = useStoreState((state) => state.youtubePlayLists);
   const playListActon = useStoreActions((action) => action.youtubePlayLists);
+  const favoriteStore = useStoreState((state) => state.favoriteLists);
+  const favoriteActions = useStoreActions((action) => action.favoriteLists);
+
+  const recentStore = useStoreState((state) => state.recentPlayLists);
+  const recentActions = useStoreActions((action) => action.recentPlayLists);
+
   // Model open function
   const handleClickOpen = () => {
     setOpen(true);
@@ -34,7 +46,42 @@ function Home() {
       playListActon.savePlayList(url);
     }
   };
-  console.log("I am handel chnage", store, url, Object.values(store.data));
+  useEffect(() => {
+    const data = favoriteActions.data();
+    setFavoriteState({ ...favoriteStore, data, error: "" });
+    setFavoriteState({ ...favoriteStore, data, error: "" });
+  }, [favoriteStore.items]);
+
+  useEffect(() => {
+    const data = recentActions.data();
+    setRecentState({ ...recentStore, data, error: "" });
+    setRecentState({ ...recentStore, data, error: "" });
+  }, [recentStore.items]);
+
+  useEffect(() => {
+    if (store.success) {
+      toast.success(store.success);
+      playListActon.setSuccess("");
+    }
+    if (store.error) {
+      toast.error(store.error);
+      playListActon.setError("");
+    }
+    if (favoriteStore.success) {
+      toast.success(favoriteStore.success);
+      favoriteActions.setSuccess("");
+    }
+    // if (favoriteStore.error) {
+    //   toast.error(favoriteStore.error);
+    //   playListActon.setError("");
+    // }
+  }, [store.success, store.error, favoriteStore.success]);
+  if (
+    Object.keys(favoriteState).length === 0 &&
+    Object.keys(recentState).length === 0
+  ) {
+    return;
+  }
   return (
     <div>
       <Modal
@@ -43,6 +90,7 @@ function Home() {
         handleClose={handleClose}
         css={{ width: "500px" }}
         handleSubmit={handleSubmit}
+        okButton={"Add Playlist"}
       >
         <Box sx={{ margin: " 20px 0" }}>
           <OutlinedInput
@@ -66,16 +114,23 @@ function Home() {
           path={"/playlists"}
           store={store}
           title={"Your Playlist Items"}
+          addPlayList={favoriteActions.addFavorite}
+          removeFavorite={favoriteActions.removeFavorite}
+          deletePlayList={playListActon.deletePlayList}
         />
         <PlayListItems
           path={"/favourite-playlists"}
-          store={store}
+          store={favoriteState}
           title={"Your Favourite Playlist Items"}
+          favorite={true}
+          removeFavorite={favoriteActions.removeFavorite}
+          // addPlayList={favoriteActions.removeFavoriteList}
         />
         <PlayListItems
-          store={store}
+          store={recentState}
           title={"Your Recent Items"}
           seeAll={true}
+          recent={true}
         />
       </Box>
     </div>

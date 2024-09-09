@@ -18,20 +18,33 @@ const playListModel = persist({
     state.isLoading = payload;
   }),
   setSuccess: action((state, payload) => {
-    state.success(payload);
+    state.success = payload;
   }),
+  setPlayList: action((state, payload) => {
+    delete state.data[payload];
+  }),
+  deletePlayList: thunk(
+    ({ setPlayList, setSuccess }, payload, { getStoreActions }) => {
+      setSuccess("");
+      getStoreActions().favoriteLists.removeFavoriteList(payload);
+      getStoreActions().recentPlayLists.removeRecentList(payload);
+      setPlayList(payload);
+      setSuccess("Remove playlist Successfully");
+    }
+  ),
   savePlayList: thunk(
     async (
       { addPlayList, setError, setLoading, setSuccess },
       playlistId,
       { getState }
     ) => {
+      setError("");
+      setSuccess("");
       if (getState().data[playlistId]) {
         setError("Your Playlist Already Exist");
         return;
       }
       try {
-        setError("");
         setLoading(true);
         const data = await getPlayListItems(playlistId);
         addPlayList(data);
