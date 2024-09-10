@@ -4,17 +4,17 @@ import { useEffect, useState } from "react";
 function useFavorite() {
   const [store, setStore] = useState({});
   const favoriteStore = useStoreState((state) => state.favoriteLists);
-  const action = useStoreActions((action) => action.favoriteLists);
+  const actions = useStoreActions((action) => action.favoriteLists);
 
   useEffect(() => {
-    const data = action.data();
+    const data = actions.data();
     setStore({ ...favoriteStore, data, error: "" });
     setStore({ ...favoriteStore, data, error: "" });
   }, [favoriteStore.items]);
 
   return {
     favoriteStore,
-    action,
+    actions,
     store,
   };
 }

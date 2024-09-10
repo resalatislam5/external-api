@@ -6,6 +6,7 @@ import { useStoreActions, useStoreState } from "easy-peasy";
 import PlayListItems from "./PlayListItems";
 import toast from "react-hot-toast";
 import useFavorite from "../../hooks/useFavorite";
+import usePlayList from "../../hooks/usePlayList";
 
 // TODO: DELETE icon change
 function Home() {
@@ -22,16 +23,15 @@ function Home() {
   } = useChangeInputData({ State: "" });
   // useFacorite hooks
   const {
-    action: favoriteActions,
+    actions: favoriteActions,
     favoriteStore,
     store: favoriteState,
   } = useFavorite();
 
   // easy peasy store
-  const store = useStoreState((state) => state.youtubePlayLists);
-  const playListActon = useStoreActions((action) => action.youtubePlayLists);
-  // const favoriteStore = useStoreState((state) => state.favoriteLists);
-  // const favoriteActions = useStoreActions((action) => action.favoriteLists);
+  // const store = useStoreState((state) => state.youtubePlayLists);
+  // const playListActon = useStoreActions((action) => action.youtubePlayLists);
+  const { store, actions: playListActon } = usePlayList();
 
   const recentStore = useStoreState((state) => state.recentPlayLists);
   const recentActions = useStoreActions((action) => action.recentPlayLists);
@@ -54,11 +54,6 @@ function Home() {
       playListActon.savePlayList(url);
     }
   };
-  // useEffect(() => {
-  //   const data = favoriteActions.data();
-  //   setFavoriteState({ ...favoriteStore, data, error: "" });
-  //   setFavoriteState({ ...favoriteStore, data, error: "" });
-  // }, [favoriteStore.items]);
 
   useEffect(() => {
     const data = recentActions.data();
@@ -132,7 +127,6 @@ function Home() {
           title={"Your Favourite Playlist Items"}
           favorite={true}
           removeFavorite={favoriteActions.removeFavorite}
-          // addPlayList={favoriteActions.removeFavoriteList}
         />
         <PlayListItems
           store={recentState}

@@ -5,12 +5,12 @@ import toast from "react-hot-toast";
 import { useEffect } from "react";
 
 function AllFavorite() {
-  const { action, store } = useFavorite();
+  const { actions, store } = useFavorite();
 
   useEffect(() => {
     if (store.success) {
       toast.success(store.success);
-      action.setSuccess("");
+      actions.setSuccess("");
     }
   }, [store.success]);
 
@@ -40,7 +40,7 @@ function AllFavorite() {
               channelTitle={e.channelTitle}
               isFavorite={e.isFavorite}
               favorite={true}
-              removeFavorite={action.removeFavorite}
+              removeFavorite={actions.removeFavorite}
             />
           ))
         ) : (
