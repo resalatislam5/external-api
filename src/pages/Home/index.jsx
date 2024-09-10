@@ -5,6 +5,7 @@ import useChangeInputData from "../../hooks/useChangeInputData";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import PlayListItems from "./PlayListItems";
 import toast from "react-hot-toast";
+import useFavorite from "../../hooks/useFavorite";
 
 // TODO: DELETE icon change
 function Home() {
@@ -12,18 +13,25 @@ function Home() {
   const [open, setOpen] = useState(false);
   //
 
-  const [favoriteState, setFavoriteState] = useState({});
+  // const [favoriteState, setFavoriteState] = useState({});
   const [recentState, setRecentState] = useState({});
   // Handel  Change
   const {
     handleChange,
     state: { url },
   } = useChangeInputData({ State: "" });
+  // useFacorite hooks
+  const {
+    action: favoriteActions,
+    favoriteStore,
+    store: favoriteState,
+  } = useFavorite();
+
   // easy peasy store
   const store = useStoreState((state) => state.youtubePlayLists);
   const playListActon = useStoreActions((action) => action.youtubePlayLists);
-  const favoriteStore = useStoreState((state) => state.favoriteLists);
-  const favoriteActions = useStoreActions((action) => action.favoriteLists);
+  // const favoriteStore = useStoreState((state) => state.favoriteLists);
+  // const favoriteActions = useStoreActions((action) => action.favoriteLists);
 
   const recentStore = useStoreState((state) => state.recentPlayLists);
   const recentActions = useStoreActions((action) => action.recentPlayLists);
@@ -46,11 +54,11 @@ function Home() {
       playListActon.savePlayList(url);
     }
   };
-  useEffect(() => {
-    const data = favoriteActions.data();
-    setFavoriteState({ ...favoriteStore, data, error: "" });
-    setFavoriteState({ ...favoriteStore, data, error: "" });
-  }, [favoriteStore.items]);
+  // useEffect(() => {
+  //   const data = favoriteActions.data();
+  //   setFavoriteState({ ...favoriteStore, data, error: "" });
+  //   setFavoriteState({ ...favoriteStore, data, error: "" });
+  // }, [favoriteStore.items]);
 
   useEffect(() => {
     const data = recentActions.data();

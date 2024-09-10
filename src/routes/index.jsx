@@ -5,6 +5,8 @@ import Twiter from "../pages/Twitter";
 import Facebook from "../pages/Facebook";
 import Youtube from "../pages/Youtube";
 import MainLayout from "../layout/MainLayout";
+import AllPlayList from "../pages/AllPlayList";
+import AllFavorite from "../pages/AllFavoriteList";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,14 @@ const router = createBrowserRouter([
       {
         path: "/youtube",
         element: <Youtube />,
+      },
+      {
+        path: "/playlists",
+        element: <AllPlayList />,
+      },
+      {
+        path: "/favourite-playlists",
+        element: <AllFavorite />,
       },
     ],
   },
