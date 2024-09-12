@@ -7,6 +7,7 @@ import PlayListItems from "./PlayListItems";
 import toast from "react-hot-toast";
 import useFavorite from "../../hooks/useFavorite";
 import usePlayList from "../../hooks/usePlayList";
+import useRecent from "../../hooks/useRecent";
 
 // TODO: DELETE icon change
 function Home() {
@@ -14,27 +15,25 @@ function Home() {
   const [open, setOpen] = useState(false);
   //
 
-  // const [favoriteState, setFavoriteState] = useState({});
-  const [recentState, setRecentState] = useState({});
+  // const [recentState, setRecentState] = useState({});
   // Handel  Change
   const {
     handleChange,
     state: { url },
   } = useChangeInputData({ State: "" });
-  // useFacorite hooks
+  // useFavorite hooks
   const {
     actions: favoriteActions,
     favoriteStore,
     store: favoriteState,
   } = useFavorite();
-
+  // useRecent hooks
+  const { store: recentStore } = useRecent();
   // easy peasy store
-  // const store = useStoreState((state) => state.youtubePlayLists);
-  // const playListActon = useStoreActions((action) => action.youtubePlayLists);
   const { store, actions: playListActon } = usePlayList();
 
-  const recentStore = useStoreState((state) => state.recentPlayLists);
-  const recentActions = useStoreActions((action) => action.recentPlayLists);
+  // const recentStore = useStoreState((state) => state.recentPlayLists);
+  // const recentActions = useStoreActions((action) => action.recentPlayLists);
 
   // Model open function
   const handleClickOpen = () => {
@@ -55,11 +54,11 @@ function Home() {
     }
   };
 
-  useEffect(() => {
-    const data = recentActions.data();
-    setRecentState({ ...recentStore, data, error: "" });
-    setRecentState({ ...recentStore, data, error: "" });
-  }, [recentStore.items]);
+  // useEffect(() => {
+  //   const data = recentActions.data();
+  //   setRecentState({ ...recentStore, data, error: "" });
+  //   setRecentState({ ...recentStore, data, error: "" });
+  // }, [recentStore.items]);
 
   useEffect(() => {
     if (store.success) {
@@ -81,7 +80,7 @@ function Home() {
   }, [store.success, store.error, favoriteStore.success]);
   if (
     Object.keys(favoriteState).length === 0 &&
-    Object.keys(recentState).length === 0
+    Object.keys(recentStore).length === 0
   ) {
     return;
   }
@@ -129,7 +128,7 @@ function Home() {
           removeFavorite={favoriteActions.removeFavorite}
         />
         <PlayListItems
-          store={recentState}
+          store={recentStore}
           title={"Your Recent Items"}
           seeAll={true}
           recent={true}

@@ -7,6 +7,7 @@ import Youtube from "../pages/Youtube";
 import MainLayout from "../layout/MainLayout";
 import AllPlayList from "../pages/AllPlayList";
 import AllFavorite from "../pages/AllFavoriteList";
+import PlayListVideo from "../pages/PlayListVideo";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/favourite-playlists",
         element: <AllFavorite />,
+      },
+      {
+        path: "/playlist/:id",
+        element: <PlayListVideo />,
       },
     ],
   },

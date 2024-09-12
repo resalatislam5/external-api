@@ -21,12 +21,14 @@ const recentPlayListModel = persist({
     return items;
   }),
   addRecentList: action((state, payload) => {
-    if (state.items.find((e) => e === payload)) {
+    if (state.items[0] === payload) {
       return;
     }
-    state.items = [...state.items, payload];
-    state.items.slice(0, 3);
-    state.success = "Successfully Added";
+    if (state.items.find((e) => e === payload)) {
+      state.items = state.items.filter((e) => e !== payload);
+    }
+    state.items.unshift(payload);
+    state.items = state.items.slice(0, 4);
   }),
   removeRecentList: action((state, payload) => {
     state.items = state.items.filter((e) => e !== payload);

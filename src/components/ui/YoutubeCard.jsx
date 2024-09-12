@@ -83,7 +83,7 @@ const YoutubeCard = ({
             )}
           </Box>
         )}
-        <CustomLink to={to} sx={{ zIndex: "0.5" }}>
+        <CustomLink to={`/playlist/${to}`} sx={{ zIndex: "0.5" }}>
           <CardActionArea>
             <Box position={"relative"}>
               <CardMedia component="img" image={img} alt={title} />
@@ -116,29 +116,6 @@ const YoutubeCard = ({
             </CardContent>
           </CardActionArea>
         </CustomLink>
-        {/* <CardActions>
-        <CustomLink
-          to={to}
-          sx={{
-            display: "flex",
-            justifyContent: "Center",
-            alignItems: "Center",
-            gap: "8px",
-            padding: "10px",
-            background: "#1976D2",
-            width: "96%",
-            borderRadius: "8px",
-            color: "white",
-            position: "absolute",
-            bottom: "7px",
-          }}
-          variant="h6"
-          color="primary"
-        >
-          <PlayCircleOutline /> Open
-        </CustomLink>
-        <Button onClick={() => addPlayList(to)}>Favorite</Button>
-      </CardActions> */}
       </Card>
     </>
   );
