@@ -56,6 +56,14 @@ const playListModel = persist({
       }
     }
   ),
+  search: thunk(({ savePlayList }, payload, { getState }) => {
+    let playlist = getState()?.data[payload];
+    if (!playlist) {
+      savePlayList(payload);
+      playlist = getState()?.data[payload];
+    }
+    return playlist;
+  }),
 });
 
 export default playListModel;
