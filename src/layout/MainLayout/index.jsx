@@ -6,10 +6,15 @@ import {
   CssBaseline,
   ThemeProvider,
 } from "@mui/material";
-import { useState } from "react";
+import { useStoreActions, useStoreState } from "easy-peasy";
 function MainLayout() {
-  // change dark mode and light mode useState
-  const [darkMode, setDarkMode] = useState(false);
+  // change dark mode and light mode action from easy-peasy
+  const setDarkMode = useStoreActions(
+    (actions) => actions.themeData.setDarkMode
+  );
+  // get theme state from easy-peasy
+  const darkMode = useStoreState((state) => state.themeData.darkMode);
+
   // Toggle darkMode useState
   const changeDarkMode = () => setDarkMode(!darkMode);
   // dark mode and light mode theme

@@ -9,13 +9,9 @@ import { useStoreActions, useStoreState } from "easy-peasy";
 
 function PlayListVideo() {
   // TODO: Fully responsive
-  // TODO: Colse button functionality
-  // TODO: title and description show and image and channel name
   // TODO: add Comment functionality
   // TODO: theame change color problem
   // TODO: implement shear button
-  // TODO: progress save
-  // TODO: show
   // TODO: After reloading, the back theme remove, it needs to fixed
   // TODO: ADD next Video Button
   const [hwSize, setHwSize] = useState({ height: null, width: null });

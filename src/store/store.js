@@ -3,6 +3,7 @@ import playListModel from "./model/playListModel";
 import favoritePlayListModel from "./model/favoritePlayListModel";
 import recentPlayListModel from "./model/recentPlayListModel";
 import currentVideoInfoModel from "./model/currentVideoInfo";
+import ThemeModel from "./model/ThemeModel";
 
 const store = createStore(
   persist(
@@ -11,6 +12,7 @@ const store = createStore(
       favoriteLists: favoritePlayListModel,
       recentPlayLists: recentPlayListModel,
       currentVideoInfo: currentVideoInfoModel,
+      themeData: ThemeModel,
     },
     {
       storage: "localStorage",
