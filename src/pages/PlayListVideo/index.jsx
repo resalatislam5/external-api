@@ -5,34 +5,66 @@ import usePlayList from "../../hooks/usePlayList";
 import YouTube from "react-youtube";
 import { Box, Button, Grid2, Stack, Typography } from "@mui/material";
 import { MenuOutlined } from "@mui/icons-material";
+import { useStoreActions, useStoreState } from "easy-peasy";
 
 function PlayListVideo() {
   // TODO: Fully responsive
-  // TODO: Colse button sfunctionality
+  // TODO: Colse button functionality
   // TODO: title and description show and image and channel name
   // TODO: add Comment functionality
   // TODO: theame change color problem
   // TODO: implement shear button
   // TODO: progress save
   // TODO: show
+  // TODO: After reloading, the back theme remove, it needs to fixed
+  // TODO: ADD next Video Button
   const [hwSize, setHwSize] = useState({ height: null, width: null });
   const [playlist, setPlaylist] = useState();
   const [show, setShow] = useState(true);
-  const [currentVideoNumber, setCurrentVideoNumber] = useState("");
-  const [videoId, setVideoId] = useState("");
+  const [currentVideoNumber, setCurrentVideoNumber] = useState(1);
+  const [videoDetails, setVideoDetails] = useState({
+    id: "",
+    videoId: "",
+    title: "",
+    description: "",
+    currentTime: 0,
+  });
+  const [seeMore, setSeeMore] = useState(false);
   const { id } = useParams();
   const { actions: recentAction } = useRecent();
   const { actions } = usePlayList();
+
+  // current video action from easy-peasy
+  const currentVideoAction = useStoreActions(
+    (actions) => actions.currentVideoInfo
+  );
+  // current video state from easy-peasy
+  const currentVideoState = useStoreState(
+    (state) => state.currentVideoInfo.items
+  );
 
   useEffect(() => {
     recentAction.addRecentList(id);
     setPlaylist(actions.search(id));
   }, [id]);
+
+  // set current video
+  const handleCurrentVideo = ({ videoId, title, description }) => {
+    currentVideoAction.setItem({
+      id,
+      videoId,
+      title,
+      description,
+    });
+  };
+  useEffect(() => {
+    setVideoDetails({ ...currentVideoState[id] });
+  }, [currentVideoState, id]);
+
   console.log("playlist", playlist);
+  console.log("currentVideoState", videoDetails.videoId);
 
   useLayoutEffect(() => {
-    console.log("useLayoutEffect");
-
     const handleResize = () => {
       console.log("useLayoutEffect inner");
       const height = window.innerHeight;
@@ -51,12 +83,21 @@ function PlayListVideo() {
   if (!playlist) {
     return;
   }
+  if (!currentVideoState[id]) {
+    handleCurrentVideo({
+      id,
+      videoId: playlist?.items[0]?.snippet?.resourceId?.videoId,
+      title: playlist?.items[0]?.snippet?.title,
+      description: playlist?.items[0]?.snippet?.description,
+      currentTime: videoDetails.currentTime,
+    });
+  }
   console.log("height", hwSize.height, hwSize.width > 900);
   return (
     <Grid2 justifyContent={"center"} container spacing={2}>
       <Grid2 size={{ sx: 12, md: 8 }}>
         <YouTube
-          videoId={videoId} // defaults -> ''
+          videoId={videoDetails.videoId} // defaults -> ''
           // id={string} // defaults -> ''
           // className={string} // defaults -> ''
           // iframeClassName={string} // defaults -> ''
@@ -65,22 +106,65 @@ function PlayListVideo() {
             width: hwSize.width > 900 ? hwSize.width / 1.7 : hwSize.width / 1.1,
             height:
               hwSize.width > 900 ? hwSize.height / 1.6 : hwSize.width / 1.1,
+            playerVars: {
+              autoplay: 1,
+              controls: 1,
+            },
           }} // defaults -> {}
-          // onReady={func} // defaults -> noop
-          // onPlay={func} // defaults -> noop
+          onReady={(e) => e.target.seekTo(videoDetails?.currentTime, true)} // defaults -> noop
+          // onPlay={(func) =>
+          //   console.log("onplay", func.target.playVideo(442.7716349275208))
+          // } // defaults -> noop
           // onPause={func} // defaults -> noop
           // onEnd={func} // defaults -> noop
           // onError={func} // defaults -> noop
-          // onStateChange={func} // defaults -> noop
+          onStateChange={(func) => {
+            currentVideoAction.setItem({
+              ...currentVideoState[id],
+              currentTime: func.target.getCurrentTime(),
+            });
+          }} // defaults -> noop
           // onPlaybackRateChange={func} // defaults -> noop
           // onPlaybackQualityChange={func} // defaults -> noop
         />
+        <Typography
+          mt={5}
+          component="h1"
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+          }}
+        >
+          {videoDetails.title}
+        </Typography>
+        <Typography
+          mt={1}
+          mb={3}
+          component="p"
+          variant="body1"
+          sx={{
+            xs: { fontSize: "24px" },
+            sm: { fontSize: "14px" },
+          }}
+        >
+          {seeMore ? (
+            <>
+              {videoDetails?.description}
+              <Button onClick={() => setSeeMore(false)}>...less</Button>
+            </>
+          ) : (
+            <>
+              {videoDetails?.description?.slice(0, 100)}
+              <Button onClick={() => setSeeMore(true)}>...more</Button>
+            </>
+          )}
+        </Typography>
       </Grid2>
       <Grid2 size={{ sx: 12, md: 4 }}>
         {show ? (
           <>
             <Box
-              bgcolor={"#c2c2c2"}
+              bgcolor="secondary.main"
               paddingX={2}
               paddingY={3}
               borderRadius={"20px 20px 0px 0px"}
@@ -102,7 +186,7 @@ function PlayListVideo() {
                   right: "-5px",
                   top: "-5px",
                   fontSize: "25px",
-                  color: "black",
+                  color: "inherit",
                 }}
               >
                 X
@@ -116,19 +200,33 @@ function PlayListVideo() {
                 paddingTop: "20px",
                 borderRadius: "0 0 10px 10px",
               }}
-              bgcolor={"#dedede"}
+              bgcolor="secondary.light"
             >
               {playlist.items?.map((e, i) => (
                 <Stack
                   direction={"row"}
                   alignItems={{ xs: "center", md: "flex-start" }}
+                  onLoad={() => {
+                    if (
+                      e.snippet?.resourceId?.videoId === videoDetails.videoId
+                    ) {
+                      setCurrentVideoNumber(i + 1);
+                    }
+                  }}
                   onClick={() => {
                     setCurrentVideoNumber(i + 1),
-                      setVideoId(e.snippet?.resourceId?.videoId);
+                      handleCurrentVideo({
+                        videoId: e.snippet?.resourceId?.videoId,
+                        title: e.snippet?.title,
+                        description: e.snippet?.description,
+                      });
                   }}
                   sx={{
                     cursor: "pointer",
-                    "&:hover": { backgroundColor: "#c2c2c2" },
+                    "&:hover": { backgroundColor: "secondary.main" },
+                    backgroundColor:
+                      e.snippet?.resourceId?.videoId === videoDetails.videoId &&
+                      "secondary.main",
                   }}
                   container
                   key={e.id}
